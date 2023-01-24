@@ -10,14 +10,19 @@ const {
   contactUpdate,
 } = require("../../controllers/contactController");
 
+const {
+  addContactPostValidation,
+  updateContactValidation,
+} = require("../../middlewares/validationJoi");
+
 router.get("/", getContact);
 
 router.get("/:contactId", contactByIdGet);
 
-router.post("/", contactAdd);
+router.post("/", addContactPostValidation, contactAdd);
 
 router.delete("/:contactId", contactRemove);
 
-router.put("/:contactId", contactUpdate);
+router.put("/:contactId", updateContactValidation, contactUpdate);
 
 module.exports = router;

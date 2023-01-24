@@ -33,6 +33,12 @@ const contactRemove = async (req, res, next) => {
   if (necessaryContact) {
     return res.status(200).json({ message: "contact deleted" });
   }
+
+  if (!necessaryContact) {
+    return res.status(400).json({
+      message: `Not found ${req.params.contactId}`,
+    });
+  }
   next();
 };
 
