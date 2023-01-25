@@ -8,21 +8,14 @@ const {
 
 const getContact = async (req, res, next) => {
   const contacts = await listContacts();
-  if (contacts) {
-    return res.status(200).json({ contacts });
-  }
-  next();
+
+  return res.status(200).json({ contacts });
 };
 
 const contactByIdGet = async (req, res, next) => {
   const IdContact = await getContactById(req.params.contactId);
   if (IdContact) {
     return res.status(200).json({ IdContact });
-  }
-  if (!IdContact) {
-    return res.status(400).json({
-      status: `failure, no contact with id ${req.params.contactId} found`,
-    });
   }
 
   next();
@@ -33,18 +26,12 @@ const contactRemove = async (req, res, next) => {
   if (necessaryContact) {
     return res.status(200).json({ message: "contact deleted" });
   }
-
-  if (!necessaryContact) {
-    return res.status(400).json({
-      message: `Not found ${req.params.contactId}`,
-    });
-  }
   next();
 };
 
 const contactAdd = async (req, res, next) => {
   const newContact = await addContact(req.body);
-  console.log(newContact);
+
   if (newContact) {
     return res.status(201).json({ newContact });
   }
@@ -55,7 +42,7 @@ const contactUpdate = async (req, res, next) => {
   const necessaryContact = await updateContact(req.params.contactId, req.body);
 
   if (necessaryContact) {
-    return res.status(201).json({ necessaryContact });
+    return res.status(200).json({ necessaryContact });
   }
   next();
 };

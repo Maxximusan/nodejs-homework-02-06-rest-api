@@ -32,12 +32,14 @@ const getContactById = async (contactId) => {
 const removeContact = async (contactId) => {
   try {
     const contacts = await listContacts();
-    const removedContact = await getContactById(contactId);
+    const removedContact = contacts.find(
+      (contact) => contact.id === contactId.toString()
+    );
     const newListContacts = contacts.filter(
       (contact) => contact.id !== String(contactId)
     );
     await fs.writeFile(contactsPath, JSON.stringify(newListContacts));
-    //   return newListContacts;
+
     return removedContact;
   } catch (error) {
     console.log(error);
