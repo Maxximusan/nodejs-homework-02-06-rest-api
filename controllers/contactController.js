@@ -7,44 +7,81 @@ const {
 } = require("../models/contacts");
 
 const getContact = async (req, res, next) => {
-  const contacts = await listContacts();
+  try {
+    const contacts = await listContacts();
 
-  return res.status(200).json({ contacts });
+    return res.status(200).json({ contacts });
+  } catch (error) {
+    // res.status(500).json({ message: "error error" });
+    next(error);
+  }
 };
 
 const contactByIdGet = async (req, res, next) => {
-  const IdContact = await getContactById(req.params.contactId);
-  if (IdContact) {
-    return res.status(200).json({ IdContact });
-  }
+  try {
+    const IdContact = await getContactById(req.params.contactId);
+    // if (IdContact) {
+    //   return res.status(200).json({ IdContact });
+    // }
 
-  next();
+    // next();
+    if (!IdContact) {
+      next();
+    }
+    return res.status(200).json({ IdContact });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const contactRemove = async (req, res, next) => {
-  const necessaryContact = await removeContact(req.params.contactId);
-  if (necessaryContact) {
+  try {
+    const necessaryContact = await removeContact(req.params.contactId);
+    //   if (necessaryContact) {
+    //     return res.status(200).json({ message: "contact deleted" });
+    //   }
+    //         next();
+    if (!necessaryContact) {
+      next();
+    }
+
     return res.status(200).json({ message: "contact deleted" });
+  } catch (error) {
+    next(error);
   }
-  next();
 };
 
 const contactAdd = async (req, res, next) => {
-  const newContact = await addContact(req.body);
+  try {
+    const newContact = await addContact(req.body);
 
-  if (newContact) {
-    return res.status(201).json({ newContact });
+    if (newContact) {
+      return res.status(201).json({ newContact });
+    }
+  } catch (error) {
+    next(error);
   }
-  next();
 };
 
 const contactUpdate = async (req, res, next) => {
-  const necessaryContact = await updateContact(req.params.contactId, req.body);
+  try {
+    const necessaryContact = await updateContact(
+      req.params.contactId,
+      req.body
+    );
 
-  if (necessaryContact) {
+    //   if (necessaryContact) {
+    //     return res.status(200).json({ necessaryContact });
+    //   }
+    //   next();
+
+    if (!necessaryContact) {
+      next();
+    }
     return res.status(200).json({ necessaryContact });
+  } catch (error) {
+    next(error);
   }
-  next();
 };
 
 module.exports = {
