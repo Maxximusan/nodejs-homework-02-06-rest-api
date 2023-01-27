@@ -1,3 +1,5 @@
+const { NotFound } = require("http-errors");
+
 const {
   listContacts,
   getContactById,
@@ -10,7 +12,7 @@ const getContact = async (req, res, next) => {
   try {
     const contacts = await listContacts();
 
-    return res.status(200).json({ contacts });
+    res.status(200).json({ contacts });
   } catch (error) {
     // res.status(500).json({ message: "error error" });
     next(error);
@@ -20,15 +22,15 @@ const getContact = async (req, res, next) => {
 const contactByIdGet = async (req, res, next) => {
   try {
     const IdContact = await getContactById(req.params.contactId);
-    // if (IdContact) {
-    //   return res.status(200).json({ IdContact });
-    // }
-
-    // next();
     if (!IdContact) {
-      next();
+      throw new NotFound({ message: "not found" });
     }
-    return res.status(200).json({ IdContact });
+    res.status(200).json({ IdContact });
+    // next();
+    // if (!IdContact) {
+    //   next();
+    // }
+    // return res.status(200).json({ IdContact });
   } catch (error) {
     next(error);
   }
@@ -41,11 +43,18 @@ const contactRemove = async (req, res, next) => {
     //     return res.status(200).json({ message: "contact deleted" });
     //   }
     //         next();
+
+    // if (!necessaryContact) {
+    //   next();
+    // }
+
     if (!necessaryContact) {
-      next();
+      const error = new Error({ message: "not found" });
+      error.status = 404;
+      throw error;
     }
 
-    return res.status(200).json({ message: "contact deleted" });
+    res.status(200).json({ message: "contact deleted" });
   } catch (error) {
     next(error);
   }
@@ -55,9 +64,7 @@ const contactAdd = async (req, res, next) => {
   try {
     const newContact = await addContact(req.body);
 
-    if (newContact) {
-      return res.status(201).json({ newContact });
-    }
+    res.status(201).json({ newContact });
   } catch (error) {
     next(error);
   }
@@ -75,10 +82,17 @@ const contactUpdate = async (req, res, next) => {
     //   }
     //   next();
 
+    // if (!necessaryContact) {
+    //   next();
+    // }
+
     if (!necessaryContact) {
-      next();
+      const error = new Error({ message: "not found" });
+      error.status = 404;
+      throw error;
     }
-    return res.status(200).json({ necessaryContact });
+
+    res.status(200).json({ necessaryContact });
   } catch (error) {
     next(error);
   }
