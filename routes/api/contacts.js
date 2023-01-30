@@ -10,24 +10,18 @@ const {
   contactUpdate,
 } = require("../../controllers/contactController");
 
-// const {
-//   addContactPostValidation,
-//   updateContactValidation,
-// } = require("../../middlewares/validationJoi");
+const { validation, isValidId } = require("../../middlewares");
 
-const { validation } = require("../../middlewares");
-const { schemaAdd, schemaUpdate } = require("../../schemas/schemas");
+const { schemas } = require("../../models/contacts");
 
 router.get("/", getContact);
 
-router.get("/:contactId", contactByIdGet);
+router.get("/:contactId", isValidId, contactByIdGet);
 
-// router.post("/", addContactPostValidation, contactAdd);
-router.post("/", validation(schemaAdd), contactAdd);
+router.post("/", validation(schemas.addSchema), contactAdd);
 
 router.delete("/:contactId", contactRemove);
 
-// router.put("/:contactId", updateContactValidation, contactUpdate);
-router.put("/:contactId", validation(schemaUpdate), contactUpdate);
+router.put("/:contactId", validation(schemas.updateSchema), contactUpdate);
 
 module.exports = router;
