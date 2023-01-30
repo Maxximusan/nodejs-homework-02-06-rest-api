@@ -26,12 +26,15 @@ const contactByIdGet = async (req, res, next) => {
 
 const contactRemove = async (req, res, next) => {
   try {
-    const necessaryContact = await removeContact(req.params.contactId);
+    const necessaryContact = await Contact.findByIdAndRemove(
+      req.params.contactId
+    );
 
     if (!necessaryContact) {
       const error = new Error({ message: "not found" });
       error.status = 404;
       throw error;
+      // идентично с throw new NotFound({ message: "not found" });
     }
 
     res.status(200).json({ message: "contact deleted" });
@@ -52,15 +55,32 @@ const contactAdd = async (req, res, next) => {
 
 const contactUpdate = async (req, res, next) => {
   try {
-    const necessaryContact = await updateContact(
+    const necessaryContact = await Contact.findByIdAndUpdate(
       req.params.contactId,
-      req.body
+      req.body,
+      { new: true }
     );
 
     if (!necessaryContact) {
-      const error = new Error({ message: "not found" });
-      error.status = 404;
-      throw error;
+      throw new NotFound({ message: "not found" });
+    }
+
+    res.status(200).json({ necessaryContact });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const contactUpdateFavorite = async (req, res, next) => {
+  try {
+    const necessaryContact = await Contact.findByIdAndUpdate(
+      req.params.contactId,
+      req.body,
+      { new: true }
+    );
+
+    if (!necessaryContact) {
+      throw new NotFound({ message: "not found" });
     }
 
     res.status(200).json({ necessaryContact });
@@ -75,4 +95,5 @@ module.exports = {
   contactRemove,
   contactAdd,
   contactUpdate,
+  contactUpdateFavorite,
 };
