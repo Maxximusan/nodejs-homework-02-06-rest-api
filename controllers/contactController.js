@@ -1,12 +1,12 @@
 const { NotFound } = require("http-errors");
 
-const { Contact } = require("../models/contacts");
+const  Contact  = require("../models/contacts");
 
 const getContact = async (req, res, next) => {
   try {
     const contacts = await Contact.find();
 
-    res.status(200).json({ contacts });
+    res.status(200).json(contacts);
   } catch (error) {
     next(error);
   }
@@ -18,7 +18,7 @@ const contactByIdGet = async (req, res, next) => {
     if (!IdContact) {
       throw new NotFound({ message: "not found" });
     }
-    res.status(200).json({ IdContact });
+    res.status(200).json(IdContact);
   } catch (error) {
     next(error);
   }
@@ -47,7 +47,7 @@ const contactAdd = async (req, res, next) => {
   try {
     const newContact = await Contact.create(req.body);
 
-    res.status(201).json({ newContact });
+    res.status(201).json(newContact);
   } catch (error) {
     next(error);
   }
