@@ -10,6 +10,7 @@ const validation = (schema) => {
 };
 module.exports = validation;
 
+// стандартный пример
 // const validation = (schema) => {
 //   return (req, res, next) => {
 //     const { error } = schema.validate(req.body);

@@ -1,36 +1,24 @@
 const { NotFound } = require("http-errors");
 
-const {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
-} = require("../models/contacts");
+const  Contact  = require("../models/contacts");
 
 const getContact = async (req, res, next) => {
   try {
-    const contacts = await listContacts();
+    const contacts = await Contact.find();
 
-    res.status(200).json({ contacts });
+    res.status(200).json(contacts);
   } catch (error) {
-    // res.status(500).json({ message: "error error" });
     next(error);
   }
 };
 
 const contactByIdGet = async (req, res, next) => {
   try {
-    const IdContact = await getContactById(req.params.contactId);
+    const IdContact = await Contact.findById(req.params.contactId);
     if (!IdContact) {
       throw new NotFound({ message: "not found" });
     }
-    res.status(200).json({ IdContact });
-    // next();
-    // if (!IdContact) {
-    //   next();
-    // }
-    // return res.status(200).json({ IdContact });
+    res.status(200).json(IdContact);
   } catch (error) {
     next(error);
   }
@@ -38,20 +26,15 @@ const contactByIdGet = async (req, res, next) => {
 
 const contactRemove = async (req, res, next) => {
   try {
-    const necessaryContact = await removeContact(req.params.contactId);
-    //   if (necessaryContact) {
-    //     return res.status(200).json({ message: "contact deleted" });
-    //   }
-    //         next();
-
-    // if (!necessaryContact) {
-    //   next();
-    // }
+    const necessaryContact = await Contact.findByIdAndRemove(
+      req.params.contactId
+    );
 
     if (!necessaryContact) {
       const error = new Error({ message: "not found" });
       error.status = 404;
       throw error;
+      // идентично с throw new NotFound({ message: "not found" });
     }
 
     res.status(200).json({ message: "contact deleted" });
@@ -62,9 +45,9 @@ const contactRemove = async (req, res, next) => {
 
 const contactAdd = async (req, res, next) => {
   try {
-    const newContact = await addContact(req.body);
+    const newContact = await Contact.create(req.body);
 
-    res.status(201).json({ newContact });
+    res.status(201).json(newContact);
   } catch (error) {
     next(error);
   }
@@ -72,24 +55,32 @@ const contactAdd = async (req, res, next) => {
 
 const contactUpdate = async (req, res, next) => {
   try {
-    const necessaryContact = await updateContact(
+    const necessaryContact = await Contact.findByIdAndUpdate(
       req.params.contactId,
-      req.body
+      req.body,
+      { new: true }
     );
 
-    //   if (necessaryContact) {
-    //     return res.status(200).json({ necessaryContact });
-    //   }
-    //   next();
+    if (!necessaryContact) {
+      throw new NotFound({ message: "not found" });
+    }
 
-    // if (!necessaryContact) {
-    //   next();
-    // }
+    res.status(200).json({ necessaryContact });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const contactUpdateFavorite = async (req, res, next) => {
+  try {
+    const necessaryContact = await Contact.findByIdAndUpdate(
+      req.params.contactId,
+      req.body,
+      { new: true }
+    );
 
     if (!necessaryContact) {
-      const error = new Error({ message: "not found" });
-      error.status = 404;
-      throw error;
+      throw new NotFound({ message: "not found" });
     }
 
     res.status(200).json({ necessaryContact });
@@ -104,4 +95,5 @@ module.exports = {
   contactRemove,
   contactAdd,
   contactUpdate,
+  contactUpdateFavorite,
 };
