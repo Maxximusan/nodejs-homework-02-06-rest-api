@@ -11,15 +11,19 @@ const {
   contactUpdateFavorite,
 } = require("../../controllers/contactController");
 
-const { validation, isValidId } = require("../../middlewares");
+const {
+  validation,
+  isValidId,
+  tokenVerification,
+} = require("../../middlewares");
 
 const schemas = require("../../schemas/schemas");
 
-router.get("/", getContact);
+router.get("/", tokenVerification, getContact);
 
 router.get("/:contactId", isValidId, contactByIdGet);
 
-router.post("/", validation(schemas.addSchema), contactAdd);
+router.post("/", tokenVerification, validation(schemas.addSchema), contactAdd);
 
 router.delete("/:contactId", isValidId, contactRemove);
 

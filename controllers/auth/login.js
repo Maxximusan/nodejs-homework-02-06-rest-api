@@ -28,6 +28,7 @@ const login = async (req, res, next) => {
       code: 200,
       data: {
         token,
+        subscription: "starter",
       },
     });
   } catch (error) {
