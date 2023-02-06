@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../../models/users");
 
 const singup = async (req, res, next) => {
-  try {
+  
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
     if (user) {
@@ -29,9 +29,7 @@ const singup = async (req, res, next) => {
     //     },
     //   },
     // });
-  } catch (error) {
-    next(error);
-  }
+ 
 };
 
 module.exports = singup;
