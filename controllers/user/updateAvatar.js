@@ -10,6 +10,7 @@ const updateAvatar = async (req, res) => {
   const { path: tempUpload, originalname } = req.file;
   const { _id: id } = req.user;
   const imageName = `${id}_${originalname}`;
+  const BASE_URL = "http://localhost:3000";
   try {
     const resultUpload = path.join(avatarsDir, imageName);
 
@@ -23,7 +24,9 @@ const updateAvatar = async (req, res) => {
 
     // await fs.rename(tempUpload, resultUpload);
 
-    const avatarURL = path.join("avatars", imageName);
+    // const avatarURL = path.join("avatars", imageName);
+    const avatarURL = `${BASE_URL}/avatars/${imageName}`;
+    // console.log(avatarURL);
 
     await User.findByIdAndUpdate(req.user._id, { avatarURL });
 
