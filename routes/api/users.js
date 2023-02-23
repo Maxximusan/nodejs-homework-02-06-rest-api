@@ -12,12 +12,14 @@ const {
   updateSubscription,
   updateAvatar,
   verifyEmail,
+  resendVerifyEmail,
 } = require("../../controllers/user");
 
 const {
   joiSingupSchema,
   joiLoginSchema,
   joiSubscriptionSchema,
+  joiVerifyEmailSchema,
 } = require("../../Schemas/Schemas");
 
 const router = express.Router();
@@ -43,5 +45,10 @@ router.patch(
 );
 
 router.get("/verify/:verificationToken", controllerWrapper(verifyEmail));
+router.post(
+  "/verify",
+  validation(joiVerifyEmailSchema),
+  controllerWrapper(resendVerifyEmail)
+);
 
 module.exports = router;
